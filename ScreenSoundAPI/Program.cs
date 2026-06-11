@@ -1,4 +1,5 @@
-﻿using ScreenSoundAPI.Modelos;
+﻿using ScreenSoundAPI.Filtros;
+using ScreenSoundAPI.Modelos;
 using System.Text.Json;
 
 using (var client = new HttpClient())
@@ -11,7 +12,7 @@ using (var client = new HttpClient())
 
         #region Trazendo somente gêneros
 
-        var generos = musicas.SelectMany(m => m.Genero.Trim().Split(",")).SelectMany(g => g.Trim().Split("/")).Distinct();
+        var generos = LinqFilter.FiltrarTodosOsGenerosMusicais(musicas);
 
         Console.WriteLine($"Generos: - {string.Join(", ", generos)}");
 
@@ -19,17 +20,23 @@ using (var client = new HttpClient())
 
         #region Ordenando artistas por nome
 
-        var artistasOrdenados = musicas.Select(m => m.Artista.Trim()).Distinct().Order();
+        var artistasOrdenados = LinqOrder.ExibirListaDeArtistasOrdenados(musicas);
 
-        Console.WriteLine($"Artistas:\n{string.Join("\n- ", artistasOrdenados)}");
+        Console.WriteLine($"Artistas:\n- {string.Join("\n- ", artistasOrdenados)}");
 
         #endregion
 
         #region Trazendo artistas por gênero
 
-        var genero = generos.Where(g => g.Contains("rock")).First();
+        var genero = generos
+            .Where(g => g.Contains("rock"))
+            .First();
 
-        var artistasPorGenero = musicas.Where(m => m.Genero.Contains(genero)).Select(m => m.Artista).Distinct().Order();
+        var artistasPorGenero = musicas
+            .Where(m => m.Genero.Contains(genero))
+            .Select(m => m.Artista)
+            .Distinct()
+            .Order();
 
         Console.WriteLine($"Artistas do gênero {genero}:\n- {string.Join("\n- ", artistasPorGenero)}");
 
@@ -39,7 +46,7 @@ using (var client = new HttpClient())
 
         var artista = artistasPorGenero.First();
 
-        var musicasArtista = musicas.Where(m => m.Artista == artista).Select(m => m.Nome.Trim()).Distinct().Order();
+        var musicasArtista = LinqFilter.FiltrarMusicasDeUmArtista(musicas, artista);
 
         Console.WriteLine($"Músicas do artista {artista}:\n- {string.Join("\n- ", musicasArtista)}");
 
