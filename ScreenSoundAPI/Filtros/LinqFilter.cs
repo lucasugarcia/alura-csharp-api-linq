@@ -20,4 +20,11 @@ internal class LinqFilter
             .Order()
             .ToList();
     }
+
+    internal static List<string> FiltrarMusicasNoTom(List<Musica> musicas, string tom)
+    {
+        return musicas.Where(m => m.Tom.Equals(tom))
+            .Select(m => m.Nome.Trim())
+            .ToList();
+    }
 }

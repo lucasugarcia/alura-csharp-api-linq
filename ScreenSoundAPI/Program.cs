@@ -51,6 +51,31 @@ using (var client = new HttpClient())
         Console.WriteLine($"Músicas do artista {artista}:\n- {string.Join("\n- ", musicasArtista)}");
 
         #endregion
+
+        #region Filtrar músicas por tom
+
+        var tom = "C#";
+        var musicasNoTom = LinqFilter.FiltrarMusicasNoTom(musicas, tom);
+
+        Console.WriteLine($"Músicas no tom de {tom}:\n- {string.Join("\n- ", musicasNoTom)}");
+
+        #endregion
+
+        var musicasLucas = new MusicasPreferidas("Lucas");
+        musicasLucas.AdicionarMusicasFavoritas(musicas[1]);
+        musicasLucas.AdicionarMusicasFavoritas(musicas[4]);
+        musicasLucas.AdicionarMusicasFavoritas(musicas[6]);
+
+        musicasLucas.ExibirMusicasFavoritas();
+        musicasLucas.GerarAquivoJson();
+
+        var musicasVanessa = new MusicasPreferidas("Vanessa");
+        musicasVanessa.AdicionarMusicasFavoritas(musicas[2]);
+        musicasVanessa.AdicionarMusicasFavoritas(musicas[5]);
+        musicasVanessa.AdicionarMusicasFavoritas(musicas[7]);
+
+        musicasVanessa.ExibirMusicasFavoritas();
+        musicasVanessa.GerarAquivoJson();
     }
     catch (Exception ex) 
     {
